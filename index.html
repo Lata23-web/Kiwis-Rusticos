@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kiwis Rústicos 🥝</title>
+
+<style>
+
+/* ===== TU CSS ORIGINAL ===== */
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#050505;
+  color:white;
+}
+
+#btnAdmin{
+  position:fixed;
+  top:15px;
+  left:15px;
+  background:#7CFC00;
+  padding:10px 15px;
+  border-radius:10px;
+  font-weight:bold;
+  text-decoration:none;
+  color:black;
+  z-index:9999;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+h2{color:#7CFC00}
+
+/* PARTIDO */
+.partido-pro{
+  background: linear-gradient(135deg,#0d0d0d,#111);
+  border:3px solid #7CFC00;
+  padding:40px;
+  border-radius:25px;
+  text-align:center;
+}
+
+.escudo{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  border:3px solid #7CFC00;
+  background:#111;
+  object-fit:cover;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:#7CFC00;
+  color:black;
+  padding:10px;
+}
+
+td{
+  background:#151515;
+  padding:10px;
+  text-align:center;
+}
+
+/* CHAT */
+#chat{
+  background:#111;
+  border:2px solid #7CFC00;
+  padding:10px;
+  border-radius:10px;
+  max-height:300px;
+  overflow-y:auto;
+}
+
+.mensaje{
+  background:#1a1a1a;
+  margin:6px 0;
+  padding:8px;
+  border-left:4px solid #7CFC00;
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+}
+
+button{
+  background:#7CFC00;
+  font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<a id="btnAdmin" href="admin.html">👑 Admin</a>
+
+<div class="container">
+
+<h1 style="text-align:center;">🥝 Kiwis Rústicos</h1>
+
+<button id="btnEditar"
+        onclick="toggleAdmin()"
+        style="display:none; margin-top:20px;">
+⚽ Editar Partido
+</button>
+
+<!-- PARTIDO -->
+<h2>📅 Próximo Partido</h2>
+
+<div class="partido-pro">
+
+<div id="horaView">🕒 10:25</div>
+<div id="fechaView">Martes 20 Mayo</div>
+
+<div style="display:flex;justify-content:center;gap:60px;align-items:center;flex-wrap:wrap;">
+
+  <div>
+    <img class="escudo" src="kiwis.png">
+    <h3 id="eq1View">Kiwis</h3>
+  </div>
+
+  <div style="font-size:40px;">VS</div>
+
+  <div>
+    <img class="escudo" src="chapela.png">
+    <h3 id="eq2View">Chapela</h3>
+  </div>
+
+</div>
+
+</div>
+
+<!-- CLASIFICACIÓN -->
+<h2>🏅 Clasificación</h2>
+
+<table>
+<tr>
+<th>Equipo</th><th>Pts</th><th>PJ</th><th>G</th><th>E</th><th>P</th>
+</tr>
+
+<tr><td>Chapela SWT</td><td>8</td><td>3</td><td>2</td><td>0</td><td>1</td></tr>
+<tr><td>Grúa Mecánica</td><td>8</td><td>3</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>Panrolillas</td><td>7</td><td>3</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td style="color:#7CFC00;">🥝 Kiwis</td><td>6</td><td>3</td><td>2</td><td>1</td><td>0</td></tr>
+
+</table>
+
+<!-- ESTADÍSTICAS -->
+<h2>📊 Estadísticas</h2>
+
+<table>
+<tr><th>Jugador</th><th>Goles</th><th>Asistencias</th><th>MVP</th></tr>
+<tr><td>Matías</td><td>1</td><td>1</td><td>2</td></tr>
+<tr><td>Papu</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>Diaz</td><td>1</td><td>1</td><td>1</td></tr>
+</table>
+
+<!-- PORTERO -->
+<h2>🧤 Portero</h2>
+
+<table>
+<tr><th>Portero</th><th>Paradas</th><th>Encajados</th><th>0</th></tr>
+<tr><td>Dani</td><td>19</td><td>7</td><td>1</td></tr>
+</table>
+
+<!-- PANEL ADMIN -->
+<div id="adminPanel" style="display:none; margin-top:20px;">
+<h2>⚽ Editar Partido</h2>
+
+<input id="hora" placeholder="Hora">
+<input id="fecha" placeholder="Fecha">
+<input id="equipo1" placeholder="Equipo 1">
+<input id="equipo2" placeholder="Equipo 2">
+
+<button onclick="guardarPartido()">Guardar</button>
+</div>
+
+<!-- CHAT -->
+<h2>💬 Chat</h2>
+
+<div id="chat"></div>
+<input id="mensaje" placeholder="Escribe mensaje...">
+<button onclick="enviarMensaje()">Enviar</button>
+
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+query,
+orderBy,
+serverTimestamp,
+doc,
+setDoc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDcsFYvdHlt7XnGzsuGzdIhUlOsjGsO1kI",
+authDomain: "kiwis-rusticos-27ea5.firebaseapp.com",
+projectId: "kiwis-rusticos-27ea5",
+storageBucket: "kiwis-rusticos-27ea5.firebasestorage.app",
+messagingSenderId: "504147775222",
+appId: "1:504147775222:web:6341c45d637fce5da0e6d7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const chat = document.getElementById("chat");
+
+/* CHAT */
+const q = query(collection(db,"chat"), orderBy("createdAt"));
+
+onSnapshot(q,(snap)=>{
+chat.innerHTML="";
+snap.forEach(d=>{
+const m=d.data();
+chat.innerHTML += `<div class="mensaje"><b>${m.usuario}:</b> ${m.texto}</div>`;
+});
+chat.scrollTop = chat.scrollHeight;
+});
+
+/* USER */
+function getUser(){
+return localStorage.getItem("usuario") || "Jugador";
+}
+
+/* ADMIN EMAIL */
+const ADMIN_EMAIL = "lata@kiwis.com";
+
+/* MOSTRAR BOTÓN ADMIN */
+onAuthStateChanged(auth, (user) => {
+
+if (user?.email === ADMIN_EMAIL) {
+document.getElementById("btnEditar").style.display = "block";
+}
+
+});
+
+/* TOGGLE ADMIN PANEL */
+window.toggleAdmin = function(){
+    function toggleAdminPanel() {
+  const panel = document.getElementById("adminPanel");
+
+  if (!panel) return;
+
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+window.toggleAdmin = toggleAdminPanel;
+
+const panel = document.getElementById("adminPanel");
+
+panel.style.display =
+panel.style.display === "block" ? "none" : "block";
+
+};
+
+/* ENVIAR MENSAJE */
+window.enviarMensaje = async function(){
+
+const input = document.getElementById("mensaje");
+if(!input.value.trim()) return;
+
+let nombre = getUser();
+
+const user = auth.currentUser;
+if(user?.email){
+nombre = user.email.split("@")[0];
+}
+
+await addDoc(collection(db,"chat"),{
+usuario:nombre,
+texto:input.value,
+createdAt:serverTimestamp()
+});
+
+input.value="";
+};
+
+/* GUARDAR PARTIDO */
+window.guardarPartido = async function(){
+
+await setDoc(doc(db,"partido","actual"),{
+hora:document.getElementById("hora").value,
+fecha:document.getElementById("fecha").value,
+equipo1:document.getElementById("equipo1").value,
+equipo2:document.getElementById("equipo2").value
+});
+
+alert("Partido actualizado");
+};
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login 🥝</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #050505;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .box {
+      background: #111;
+      padding: 30px;
+      border-radius: 15px;
+      border: 2px solid #7CFC00;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(124,252,0,0.3);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #222;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #7CFC00;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #9dff33;
+      transform: scale(1.02);
+    }
+
+    h2 {
+      color: #7CFC00;
+      margin-top: 0;
+    }
+
+    .panel {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h2>👑 Admin Login</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Contraseña">
+
+    <button onclick="login()">Entrar</button>
+
+    <!-- PANEL NOTIFICACIONES -->
+
+    <div class="panel">
+
+      <h2>🔔 Enviar notificación</h2>
+
+      <input id="tituloNoti" placeholder="Título">
+      <input id="textoNoti" placeholder="Texto">
+
+      <button onclick="enviarNoti()">
+        Enviar notificación
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyDcsFYvdHlt7XnGzsuGzdIhUlOsjGsO1kI",
+
+      authDomain: "kiwis-rusticos-27ea5.firebaseapp.com",
+
+      projectId: "kiwis-rusticos-27ea5",
+
+      storageBucket: "kiwis-rusticos-27ea5.firebasestorage.app",
+
+      messagingSenderId: "504147775222",
+
+      appId: "1:504147775222:web:6341c45d637fce5da0e6d7",
+    };
+
+    // INIT
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+    // LOGIN
+    window.login = async function () {
+
+      const email =
+        document.getElementById("email").value;
+
+      const password =
+        document.getElementById("password").value;
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        // guardar nombre automático
+        const nombre =
+          email.split("@")[0];
+
+        localStorage.setItem(
+          "usuario",
+          nombre
+        );
+
+        alert("Login correcto 🥝");
+
+        // ir a la web principal
+        window.location.href =
+          "index.html";
+
+      } catch (error) {
+
+        alert("Error: " + error.message);
+
+      }
+    }
+
+    // ENVIAR NOTIFICACIÓN
+    window.enviarNoti = async function () {
+
+      const titulo =
+        document.getElementById("tituloNoti").value;
+
+      const texto =
+        document.getElementById("textoNoti").value;
+
+      if (
+        titulo.trim() === "" ||
+        texto.trim() === ""
+      ) {
+        alert("Completa todo");
+        return;
+      }
+
+      try {
+
+        await addDoc(
+          collection(db, "notificaciones"),
+          {
+            titulo: titulo,
+            texto: texto,
+            createdAt: serverTimestamp()
+          }
+        );
+
+        alert("Notificación enviada 🔥");
+
+      } catch (error) {
+
+        alert("Error enviando notificación");
+
+        console.error(error);
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>

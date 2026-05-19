@@ -1,0 +1,176 @@
+body {
+  font-family: Arial;
+  background: #0b0b0b;
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  color: #a3ff12;
+}
+
+button {
+  padding: 10px;
+  margin: 10px;
+  background: #a3ff12;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#partidos {
+  margin-top: 20px;
+}
+#adminBtn {
+
+  position: fixed;
+
+  top: 20px;
+  left: 20px;
+
+  background: #7CFC00;
+
+  color: black;
+
+  border: none;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  z-index: 9999;
+
+  box-shadow: 0 0 15px #7CFC00;
+
+  transition: 0.3s;
+}
+
+#adminBtn:hover {
+
+  transform: scale(1.05);
+
+  background: #99ff33;
+}
+
+#loginVentana {
+
+  display: none;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.85);
+
+  justify-content: center;
+  align-items: center;
+
+  z-index: 10000;
+}
+
+#loginBox {
+
+  background: #111;
+
+  border: 2px solid #7CFC00;
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  width: 320px;
+
+  text-align: center;
+
+  box-shadow: 0 0 25px #7CFC00;
+}
+
+#loginBox h2 {
+
+  color: #7CFC00;
+
+  margin-top: 0;
+}
+
+#loginBox input {
+
+  width: 100%;
+
+  padding: 14px;
+
+  margin-top: 15px;
+
+  border-radius: 10px;
+
+  border: 2px solid #222;
+
+  background: #0d0d0d;
+
+  color: white;
+
+  box-sizing: border-box;
+}
+
+#loginBox input:focus {
+
+  outline: none;
+
+  border-color: #7CFC00;
+
+  box-shadow: 0 0 10px #7CFC00;
+}
+
+.loginBtn {
+
+  width: 100%;
+
+  padding: 14px;
+
+  margin-top: 20px;
+
+  background: #7CFC00;
+
+  color: black;
+
+  border: none;
+
+  border-radius: 10px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.loginBtn:hover {
+
+  background: #99ff33;
+}
+
+.cerrarBtn {
+
+  width: 100%;
+
+  padding: 12px;
+
+  margin-top: 10px;
+
+  background: #222;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+}
